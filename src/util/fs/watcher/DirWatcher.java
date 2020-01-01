@@ -62,21 +62,21 @@ import static java.nio.file.LinkOption.*;
  */
 
 public class DirWatcher {
-	
-	// ------ Developer Note ------
-//	static {
-//		System.out.println("[[DirWatcher (v1.3): Note: Change the packages before final deployment]]");
-//	}
-	// ******* Developer Note *******
+    
+    // ------ Developer Note ------
+//  static {
+//      System.out.println("[[DirWatcher (v1.3): Note: Change the packages before final deployment]]");
+//  }
+    // ******* Developer Note *******
     
     private final WatchService watcher;
-	private final Path dirToWatch;
+    private final Path dirToWatch;
     private final Map<WatchKey,Path> keys;
     private final boolean recursive;
     private boolean trace = false;
-	private WatchEvent.Kind<Path>[] eventsToRegister;
-	private final PrintStream out;
-	private final PrintStream err;
+    private WatchEvent.Kind<Path>[] eventsToRegister;
+    private final PrintStream out;
+    private final PrintStream err;
     
     @SuppressWarnings("unchecked")
     private static <T> WatchEvent<T> cast(WatchEvent<?> event) {
@@ -114,33 +114,33 @@ public class DirWatcher {
                     throws IOException
             {
                 register(dir);
-//	            System.out.printf("[[dirToWatch: %s, dir: %s, same: %b]] \n", dirToWatch, dir, dir.equals(dirToWatch));
+//              System.out.printf("[[dirToWatch: %s, dir: %s, same: %b]] \n", dirToWatch, dir, dir.equals(dirToWatch));
                 out.printf("[Registered: %s] %n",
-		                (dirToWatch.equals(dir) ? "." : dirToWatch.relativize(dir).toString()));
+                        (dirToWatch.equals(dir) ? "." : dirToWatch.relativize(dir).toString()));
                 return FileVisitResult.CONTINUE;
             }
             
            @Override
-	       public FileVisitResult postVisitDirectory(Path dir, IOException e)
-		          throws IOException
+           public FileVisitResult postVisitDirectory(Path dir, IOException e)
+                  throws IOException
            {
-           	    if(e != null)
-                	err.printf("[Error: Failed to register directory: %s %s]",
-			                dir,
-			                (e.getSuppressed().length > 0) ? Arrays.deepToString(e.getSuppressed()) : "");
-	            return FileVisitResult.CONTINUE;
+                if(e != null)
+                    err.printf("[Error: Failed to register directory: %s %s]",
+                            dir,
+                            (e.getSuppressed().length > 0) ? Arrays.deepToString(e.getSuppressed()) : "");
+                return FileVisitResult.CONTINUE;
            }
            
            @Override
-	       public FileVisitResult visitFileFailed(Path dir, IOException e)
-		          throws IOException
+           public FileVisitResult visitFileFailed(Path dir, IOException e)
+                  throws IOException
            {
-	           if(e != null)
-		           err.printf("[Error: Failed to register directory: %s %s]",
-				           dir,
-				           (e.getSuppressed().length > 0) ? Arrays.deepToString(e.getSuppressed()) : "");
-           	
-	            return FileVisitResult.CONTINUE;
+               if(e != null)
+                   err.printf("[Error: Failed to register directory: %s %s]",
+                           dir,
+                           (e.getSuppressed().length > 0) ? Arrays.deepToString(e.getSuppressed()) : "");
+            
+                return FileVisitResult.CONTINUE;
            }
         });
     }
@@ -152,7 +152,7 @@ public class DirWatcher {
                       final boolean recursive,
                       final WatchEvent.Kind<Path>[] events,
                       final PrintStream out, final PrintStream err)
-		    throws IOException
+            throws IOException
     {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey,Path>();
@@ -178,8 +178,8 @@ public class DirWatcher {
      * Process all events for keys queued to the watcher
      */
     public void processEvents() {
-	    System.out.println("\n[ --- Watch service started --- ]\n");
-    	
+        System.out.println("\n[ --- Watch service started --- ]\n");
+        
         for (;;) {
             
             // wait for key to be signalled
@@ -241,36 +241,36 @@ public class DirWatcher {
     // cache
     private WatchEvent.Kind<?> lastEventKind;
     private Calendar lastEventTime
-		    = new GregorianCalendar(0,0,0,0,0,-1); // Just to force the failure of first SECOND match
+            = new GregorianCalendar(0,0,0,0,0,-1); // Just to force the failure of first SECOND match
     private Path lastDirToWatch, lastChild;
     private void printEvent(final WatchEvent.Kind<?> eventKind, final Path dirToWatch, final Path child) {
-//	    System.out.printf("[[event: %s, event kind: %s, dirToWatch: %s, child: %s]] \n",
-//			    event, event.kind().name(), dirToWatch, child);
-    	
-	    Calendar eventTime = Calendar.getInstance();
-	    if(!(  (eventTime.get(SECOND) == lastEventTime.get(SECOND)
-	    		    && eventTime.get(MINUTE) == lastEventTime.get(MINUTE)
-			            && eventTime.get(HOUR_OF_DAY) == lastEventTime.get(HOUR_OF_DAY))
-	    	&&  eventKind.equals(lastEventKind)
-			&&  dirToWatch.equals(lastDirToWatch)
-			&&  child.equals(lastChild)))
-	    {
-		    out.format("%tT: %8s: %s %n", eventTime, beautifyEventName(eventKind), dirToWatch.relativize(child));
-		    
-		    // caching...
-		    lastEventKind = eventKind;
-			lastDirToWatch = dirToWatch;
-			lastChild = child;
-			lastEventTime = eventTime;
-	    }
+//      System.out.printf("[[event: %s, event kind: %s, dirToWatch: %s, child: %s]] \n",
+//              event, event.kind().name(), dirToWatch, child);
+        
+        Calendar eventTime = Calendar.getInstance();
+        if(!(  (eventTime.get(SECOND) == lastEventTime.get(SECOND)
+                    && eventTime.get(MINUTE) == lastEventTime.get(MINUTE)
+                        && eventTime.get(HOUR_OF_DAY) == lastEventTime.get(HOUR_OF_DAY))
+            &&  eventKind.equals(lastEventKind)
+            &&  dirToWatch.equals(lastDirToWatch)
+            &&  child.equals(lastChild)))
+        {
+            out.format("%tT: %8s: %s %n", eventTime, beautifyEventName(eventKind), dirToWatch.relativize(child));
+            
+            // caching...
+            lastEventKind = eventKind;
+            lastDirToWatch = dirToWatch;
+            lastChild = child;
+            lastEventTime = eventTime;
+        }
     }
     
     private String beautifyEventName(final WatchEvent.Kind<?> eventKind) {
-    	switch(eventKind.name()) {
-		    case "ENTRY_CREATE": return "Created";
-		    case "ENTRY_DELETE": return "Deleted";
-		    case "ENTRY_MODIFY": return "Modified";
-		    default: throw new AssertionError("Should not get here: Event kind not recognized! (" + eventKind.name() + ")");
-	    }
+        switch(eventKind.name()) {
+            case "ENTRY_CREATE": return "Created";
+            case "ENTRY_DELETE": return "Deleted";
+            case "ENTRY_MODIFY": return "Modified";
+            default: throw new AssertionError("Should not get here: Event kind not recognized! (" + eventKind.name() + ")");
+        }
     }
 }
