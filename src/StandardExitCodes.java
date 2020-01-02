@@ -1,5 +1,3 @@
-package util;
-
 public final class StandardExitCodes {
     // ******* Developer Note *******
     // Exit Values Constants

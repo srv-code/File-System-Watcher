@@ -1,2 +1,2 @@
-alias b='javac -d out src/FSWatcher.java src/util/StandardExitCodes.java src/util/fs/watcher/DirWatcher.java'
+alias b='javac -d out src/FSWatcher.java src/StandardExitCodes.java src/util/fs/watcher/DirWatcher.java'
 alias r='java -cp out FSWatcher'
