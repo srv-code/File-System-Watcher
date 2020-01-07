@@ -1,10 +1,9 @@
 public final class StandardExitCodes {
-    // ******* Developer Note *******
-    // Exit Values Constants
-    public static final int     NORMAL = 0,
-                                ERROR  = 1,
-                                FILE   = 2,
-                                FATAL  = 10;
+    /* Exit Values Constants */
+    public static final int NORMAL = 0;
+    public static final int ERROR  = 1;
+    public static final int FILE   = 2;
+    public static final int FATAL  = 10;
     
     public final static void showMessage() {
         System.out.println("Exit values: ");
